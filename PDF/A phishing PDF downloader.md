@@ -88,4 +88,28 @@ Also, all of URL are referred by the Object 40, as you can see, each of URL are 
 Into the PDF we don't have any more interesting , we have a lot of URL, PDF and file reference, and the rest are graphic content such as Fake authenticators, fonts, buttons, and so on.
 This time, unfortunately, we don't have elements as JavaScript, because this Malware is based on a Downloader, Its purpose is to mislead the user into believing that this PDF is a portal to other web pages and that needs to verify that you are not a robot by making forms looking like a real authenticator in which will be downloaded using other malicious web pages other files or PDFs. To these Malwares typically using Phishing techniques it's advisable a good enterprise policy, avoiding specific domains and training workers so that they distinguish a real mail to a fake mail, let's not forget that the greatest weakness is the user.
 
+# _IOC
+
+```
+hXXps://cctraff[.]ru/aws?keyword=download+pdf+to+excel+converter+full+version
+hXXps://cdn.shopify[.]com/s/files/1/0432/0319/9138/files/gogigisoladavatafanitu.pdf
+hXXps://cdn.shopify[.]com/s/files/1/0433/8050/6773/files/zobusijamojanag.pdf
+hXXps://cdn.shopify[.]com/s/files/1/0268/8394/8740/files/rojiriloxiwuruzobo.pdf
+hXXps://cdn.shopify[.]com/s/files/1/0268/8529/2223/files/bezesube.pdf
+hXXps://cdn.shopify[.]com/s/files/1/0268/8529/2223/files/bezesube.pdf
+hXXps://cdn.shopify[.]com/s/files/1/0437/6199/1841/files/sovavejipizivaduf.pdf
+hXXps://s3.amazonaws[.]com/henghuili-files/aparato_reproductor_femenino_funciones.pdf
+hXXps://s3.amazonaws[.]com/mijedusovineti/31436972639.pdf
+hXXps://s3.amazonaws[.]com/henghuili-files/93071167754.pdf
+hXXps://s3.amazonaws[.]com/jepinebawo/anatomy_knee_joint.pdf
+hXXps://uploads.strikinglycdn[.]com/files/d11907ef-8a0e-4bb7-b17c-9ae1ff5d9692/pixazubepojo.pdf
+hXXps://uploads.strikinglycdn[.]com/files/7e1ef169-b688-4b2c-b347-d5a633848cdd/21685658051.pdf
+hXXps://uploads.strikinglycdn[.]com/files/fbc2e3e8-f23a-4c63-97f3-e0be6e5efc54/67514968450.pdf
+hXXps://fidurelofomus.weebly[.]com/uploads/1/3/0/7/130740547/zumuxojezudag.pdf
+hXXps://xesaranit.weebly[.]com/uploads/1/3/2/6/132696194/divuwixudibar.pdf
+hXXps://cdn-cms.f-static[.]net/uploads/4389616/normal_5f900636493b8.pdf
+hXXps://cdn-cms.f-static[.]net/uploads/4369494/normal_5f8b051093f1f.pdf
+```
+
+
 > :t-rex: [vc0=Rexor](https://github.com/vc0RExor)  :detective:
