@@ -6,7 +6,7 @@ The main potential of NanoCore is usually minning or steal data from the compute
 
 To this analysis, I have divided into two parts, which is usually a common practice in which we observe first statically everything we can get in the shortest possible time and then a dynamic in which we will see how it behaves, although, we will lose information if we do not monitor properly or not debug.
 
-# _Static Analysis: Obfuscated JavaScript
+# _Static Analysis: Obfuscated Script
 
 We start from a VisualBasicScript (VBS) which is quite obfuscated although we can distinguish some interesting words like "_http_" or "_OwerSheL_" and some "_replace_" that will help us in the deobfuscation, for now we can't see much so we have to get on work.
 
