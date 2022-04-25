@@ -1,6 +1,58 @@
-# _SilentBuilder
+# _Overview
 
-_TBD_
+_SilentBuilder is a campaign that is being used to launch bankers such as Emotet to increase the Epoch5 botnet as well as the usual tasks of this malware. The similarities between other loaders that launch Emotet and that, once the banker is in our computer, tries to contact C&C, we could understand that this is a typical modus operandi of the criminal group Mummy Spider or TA542._
+
+# _How it Works
+
+The attacker will access our system after a phishing email, more specifically SpearPhishing [T1566.002], as it will contain an attachment such as an XLS or DOCX, after this, since the document will contain macros or hidden functions, it will download a file, usually a dll, once downloaded it will be launched on the computer abusing Regsvr32.exe to search a list of C&C servers.
+
+![0](https://user-images.githubusercontent.com/91592110/165115747-2f771d13-1043-4af2-825c-a55c5ae62601.png)
+
+# _Static Analysis
+
+Once the document is downloaded, we find, in my case, an xls, which after a glance we can see that it contains interesting functions that will run automatically when opened.
+
+![1](https://user-images.githubusercontent.com/91592110/165120891-d9d71949-a3a3-4926-be9b-9ca350d44b4e.png)
+
+An interesting fact is that in this sample we see that it has the usual warning that will launch the functions and, in addition, another warning made by the attacker that will be a simple image.
+
+![2](https://user-images.githubusercontent.com/91592110/165121338-1c2a8930-f0f8-40e5-9826-813890d61234.png)
+
+After this, we see a completely blank document, with no pages, no macros… Inquiring, we see that it does have internally pages with characteristic names and that they were hidden.
+
+![3](https://user-images.githubusercontent.com/91592110/165122164-89f7db54-ba5e-4d0a-94dc-810e1ebda71b.png)
+
+Once again the sheets are empty... After reviewed the document and by changing the color of all the pages we found all the functions obfuscated and disordered.
+
+![4](https://user-images.githubusercontent.com/91592110/165122974-c0cdd14b-01ff-4923-9d28-78c60223957e.png)
+
+In one of the sheets, we find the most important function, which would deobfuscate most of the functionality that will have the functions of the document.
+
+We obtain, as we can see, functionalities for downloading a supposed library (nhth.dll) from different domains:
+
+![5](https://user-images.githubusercontent.com/91592110/165123309-199782a9-80bb-4d94-90ef-eabc19f95af3.png)
+
+# _Dynamic Analysis
+
+_Once we have an idea of how the document is going to work internally, let's check if we are right._
+
+We see that once the excel is launched, it makes a request to a domain and downloads a file (we observe in the network traffic the MZ header typical of Windows PE). After this, we can see that it downloads the dll in \users\\< YourUser >\\ , and then it will move it to the path \AppData\Local\\< RandomName >\\ with another name < RandomName >.adj
+
+![image](https://user-images.githubusercontent.com/91592110/165127834-d79cec5f-9b27-482d-97d2-df88463f176a.png)
+
+We can see that if we compare the file obtained from the network traffic and the one found in \users\ or in \AppData\ , it is the same file.
+
+![image](https://user-images.githubusercontent.com/91592110/165128128-1d3fd203-18f4-407d-b00b-461d3a4a3512.png)
+
+After this, we will see that the dll will try to contact a list of C&C servers.
+
+![image](https://user-images.githubusercontent.com/91592110/165128479-8e606913-199b-41f1-adec-fc5831206764.png)
+
+If we look at the origin of all the addresses it tries to contact, we can see that it has servers in most of America, Europe and Asia, among others.
+
+![7](https://user-images.githubusercontent.com/91592110/165128942-55d00be4-4d06-4b20-84b3-41377f135589.png)
+
+How long will they continue to exploit Emotet? Who knows...
 
 # _IOC
 
