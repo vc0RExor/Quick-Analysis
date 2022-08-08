@@ -1,6 +1,83 @@
 # _Overview
 
-_TBD_
+_Tofsee is a malware used for mass campaigns, which does not have an associated group or actor. It has gone through different phases, but has generally been used to create Botnets or SpamBots, as well as mining actions. The starting point of Tofsee is usually a Loader or an email using the SpearPhishing technique that will launch the malware. It has been in all its stages a really worked malware, with code obfuscations, packaged samples, anti-analysis techniques, which led to a backdoor to perform minings taking advantage of the botnet features or to perform Spam._
+
+# _Technical Anlysis
+
+After the loader or phishing we would see Tofsee running on the computer, an overview of how the current versions of Tofsee work can be seen in the following schematic diagram
+
+![image](https://user-images.githubusercontent.com/91592110/183301004-460ecac2-de36-4c90-bbb2-3d665c0ef7fb.png)
+
+The actual way of working of the current versions usually has different variations, but in essence it works similar, after the execution of Tofsee, a copy of itself is created in SysWow64 (or equivalent), which then moves to temporary folders, usually the sample of the temporary folder and the one of SysWow, will not have the same name. After this, it creates a service using sc.exe, usually with a name and/or description related to elements of the network. Later, it makes modifications in the FireWall to add an svchost to a completely permissive rule, this svchost is the one that would have injected in the process. After this execution, you will be able to perform your tasks within an svchost which, observing processes would be difficult to discern also having permission to send and receive all types of traffic through the Firewall and with a service that allows us to launch the backdoor as if it were a system service.
+
+```
+.
+├── (Parentprc) Tofsee.exe
+|     ├─ (Childprc) (Moved | Dropped) <RandomName>.exe
+|             ├─ (Childprc) Netsh/cmd/sc
+|             ├─ (Childprc) (Injected) Svchost 
+|                     ├─ (Net) C&C
+
+```
+
+A large number of samples have been reviewed to narrow down the current versions of tofsee as much as possible, an example of what we would see when viewing one of them in PEstudio would be as follows
+
+![image](https://user-images.githubusercontent.com/91592110/183301107-e6b9b874-27fc-411b-ad82-5e0c9733b75d.png)
+
+At the first step, we see how it launches a copy of itself to SysWow64 which it then moves to a temporary folder, the commands used, launched by cmd.exe are the following:
+
+```
+"C:\Windows\System32\cmd.exe" /C mkdir C:\Windows\SysWOW64\<File Dropped (itself)>
+"C:\Windows\System32\cmd.exe" /C move /Y "C:\Users\user\AppData\Local\Temp\<random name>" C:\Windows\SysWOW64\<File Dropped (itself)>
+```
+![image](https://user-images.githubusercontent.com/91592110/183301167-0903a506-59a7-4041-ba14-eb01d0254566.png)
+
+After having two files in different locations, it uses one of them (SysWow location) to make the modifications in the defenses, as well as the persistence using a service. For the creation of the service, we can see that it creates with own start a service "Wifi Support", as we had commented before, usually it is habitual that it is related to something of the network, trying to avoid to be found.
+
+The command used, launched by sc.exe is as follows:
+
+```
+"C:\Windows\System32\sc.exe" create <Name of file dropped> binPath= "C:\Windows\SysWOW64\<Path file moved>\<Random name> /d\"C:\Users\<username>\Desktop\<Random Name>"" type= own start= auto DisplayName= "wifi support"
+```
+![image](https://user-images.githubusercontent.com/91592110/183301204-2e5da69d-f222-4250-bc7d-05f83ef8ffb0.png)
+
+Once it has created the service,  It has ensured that the backdoor will remain on the computer launched as another service and going completely unnoticed, so need to modify FireWall rules to prevent its communications to the outside from having any problems. For this, it launches through netsh.exe the creation of a rule that allows all the traffic for a svchost process (the one that is injected). 
+
+The command used is:
+
+```
+"C:\Windows\System32\netsh.exe" advfirewall firewall add rule name="Host-process for services of Windows" dir=in action=allow program="C:\Windows\SysWOW64\svchost.exe" enable=yes
+```
+
+![image](https://user-images.githubusercontent.com/91592110/183301250-cc434e70-68f1-43dc-8a5e-ceda1fffb134.png)
+
+![image](https://user-images.githubusercontent.com/91592110/183301252-ea93585f-2a51-470d-a9ce-0333cdbfb5e5.png)
+
+In addition, we can see, that it enters it in exclusions in registry key, being the path with random name the place where it was previously self-dropped
+
+![image](https://user-images.githubusercontent.com/91592110/183301277-258e0f5c-1482-40a7-b250-570810ddf4e4.png)
+
+![image](https://user-images.githubusercontent.com/91592110/183301279-22ef33e1-124b-4206-b19f-7cd6ef08f88b.png)
+
+While all the above processes are being launched, we have the other binary in a temporary path performing other actions, such as injecting an svchost, the same one we have seen that has been introduced in exclusions and a rule has been created in the FireWall. During a normal execution, we would find an svchost without a parent process, which, after looking at it in depth, we would see that it is another of the binaries launched by Tofsee by locating it by PID
+
+![image](https://user-images.githubusercontent.com/91592110/183301407-cf23b299-1b0c-4ff6-9cf9-5d2320efb97b.png)
+
+This binary is the other binary that Tofsee worked with and had previously moved to %temp%.
+
+![image](https://user-images.githubusercontent.com/91592110/183301423-29bbdd7f-d5ba-4712-8265-ca6ce4abf1ec.png)
+
+Once in this phase, you have the Tofsee functionalities inside a legitimate process, with persistence created and with fully open traffic on the FireWall that you will use to connect to a C&C server.
+
+The most common destinations in the campaigns used at recent months are the following (Russian or Chinese IPs/domains are commonly used by Tofsee):
+
+```
+svartalfheim.top
+lazystax.ru
+```
+
+![image](https://user-images.githubusercontent.com/91592110/183301459-911f0845-42e9-4bfa-9db7-ff8feb352951.png)
+
 
 # _IOC
 
